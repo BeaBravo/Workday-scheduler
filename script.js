@@ -47,6 +47,7 @@ $(function () {
   }
 
   function getTodaysDate() {
+    // todaysDate = dayjs();
     todaysDate = dayjs();
     currentDayEl.text(todaysDate.format("dddd, MMMM D YYYY [at] hh:mm:ss a"));
   }
@@ -56,6 +57,7 @@ $(function () {
     //and compare it to the current time
 
     var currentday = todaysDate.format("YYYY-MM-DD");
+    var currentTime = todaysDate.hour();
     var i = 0;
     //check for each hour block time to see if it's in the future
     hourBlock.each(function () {
@@ -68,14 +70,13 @@ $(function () {
         blockHour.slice(-2);
       var blockTimeDJS = dayjs(newTime);
       var inFuture = todaysDate.isBefore(blockTimeDJS);
-      var inPast = todaysDate.isAfter(blockTimeDJS);
 
-      if (inFuture) {
-        $(timeBlocks[i]).attr("class", "row time-block future");
-      } else if (inPast) {
-        $(timeBlocks[i]).attr("class", "row time-block past");
-      } else {
+      if (blockTimeDJS.hour() === currentTime) {
         $(timeBlocks[i]).attr("class", "row time-block present");
+      } else if (inFuture) {
+        $(timeBlocks[i]).attr("class", "row time-block future");
+      } else {
+        $(timeBlocks[i]).attr("class", "row time-block past");
       }
       i++;
     });
@@ -91,12 +92,10 @@ $(function () {
       id: eventId,
       text: eventText,
     };
-    if (eventText === null) {
-      return;
-    } else {
-      todaysEvents.push(newEvent);
-      localStorage.setItem("events", JSON.stringify(todaysEvents));
-    }
+
+    todaysEvents.push(newEvent);
+    localStorage.setItem("events", JSON.stringify(todaysEvents));
+    renderEvents();
     //will grab text and save it to local storage
   }
 
