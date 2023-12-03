@@ -29,11 +29,21 @@ $(function () {
   //global variables
   var todaysDate;
 
+  var todaysEvents = [];
+
   //functions
   function init() {
     setInterval(getTodaysDate, 1000);
     getTodaysDate();
     colorCodeBlocks();
+
+    var storedEvents = JSON.parse(localStorage.getItem("events"));
+
+    if (storedEvents !== null) {
+      todaysEvents = storedEvents;
+    }
+
+    renderEvents();
   }
 
   function getTodaysDate() {
@@ -75,14 +85,26 @@ $(function () {
     var idParent = $(this).parent().attr("id");
     var parentEl = $("#" + idParent);
     var textEl = parentEl.children("textarea");
-    console.log("you click the save button", idParent);
-    var newEvent = textEl.val().trim();
-    if (newEvent === null) {
+    var eventId = "#" + idParent;
+    var eventText = textEl.val().trim();
+    var newEvent = {
+      id: eventId,
+      text: eventText,
+    };
+    if (eventText === null) {
       return;
     } else {
-      console.log("this is the event: " + newEvent);
+      todaysEvents.push(newEvent);
+      localStorage.setItem("events", JSON.stringify(todaysEvents));
     }
     //will grab text and save it to local storage
+  }
+
+  function renderEvents() {
+    // grab from local storage and place in their specific id
+    $(todaysEvents).each(function () {
+      $(this.id).children("textarea").val(this.text);
+    });
   }
 
   //user interaction
