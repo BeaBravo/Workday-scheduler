@@ -22,19 +22,59 @@ $(function () {
   // TODO: Add code to display the current date in the header of the page.
   //Dependencies
   var currentDayEl = $("#currentDay");
+  var timeBlocks = $(".time-block");
+  var hourBlock = $(".hour");
 
   //global variables
+  var todaysDate;
 
   //functions
   function init() {
     setInterval(getTodaysDate, 1000);
     getTodaysDate();
+    colorCodeBlocks();
   }
 
   function getTodaysDate() {
-    var todaysDate = dayjs();
+    todaysDate = dayjs();
     currentDayEl.text(todaysDate.format("dddd, MMMM D YYYY [at] hh:mm:ss a"));
   }
+
+  function colorCodeBlocks() {
+    //this function will grab the time in the block text, convert it to a dayjs date
+    //and compare it to the current time
+
+    var currentday = todaysDate.format("YYYY-MM-DD");
+    var i = 0;
+    //check for each hour block time to see if it's in the future
+    hourBlock.each(function () {
+      var blockHour = $(this).text();
+      var newTime =
+        currentday +
+        " " +
+        blockHour.slice(0, -2) +
+        ":00 " +
+        blockHour.slice(-2);
+      var blockTimeDJS = dayjs(newTime);
+      var inFuture = todaysDate.isBefore(blockTimeDJS);
+      var inPast = todaysDate.isAfter(blockTimeDJS);
+
+      if (inFuture) {
+        $(timeBlocks[i]).attr("class", "row time-block future");
+      } else if (inPast) {
+        $(timeBlocks[i]).attr("class", "row time-block past");
+      } else {
+        $(timeBlocks[i]).attr("class", "row time-block present");
+      }
+      i++;
+    });
+  }
+
+  function saveEvent() {
+    console.log("you click the save button");
+  }
+
+  //user interaction
 
   //initializations
   init();
