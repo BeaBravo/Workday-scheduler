@@ -49,7 +49,7 @@ $(function () {
   function getTodaysDate() {
     // todaysDate = dayjs();
     todaysDate = dayjs();
-    currentDayEl.text(todaysDate.format("dddd, MMMM D YYYY [at] hh:mm:ss a"));
+    currentDayEl.text(todaysDate.format("dddd, MMMM D YYYY "));
   }
 
   function colorCodeBlocks() {
@@ -88,12 +88,36 @@ $(function () {
     var textEl = parentEl.children("textarea");
     var eventId = "#" + idParent;
     var eventText = textEl.val().trim();
+
     var newEvent = {
       id: eventId,
       text: eventText,
     };
 
     todaysEvents.push(newEvent);
+
+    // if (todaysEvents.length === 0) {
+    //   newEvent = {
+    //     id: eventId,
+    //     text: eventText,
+    //   };
+    //   todaysEvents.push(newEvent);
+    // } else {
+    //   todaysEvents.forEach(function (meeting) {
+    //     if (eventId == meeting.id) {
+    //       meeting.text = eventText;
+    //       console.log("you're busy then!");
+    //       return;
+    //     } else {
+    //       newEvent = {
+    //         id: eventId,
+    //         text: eventText,
+    //       };
+    //     }
+    //   });
+    //   todaysEvents.push(newEvent);
+    // }
+
     localStorage.setItem("events", JSON.stringify(todaysEvents));
     renderEvents();
     //will grab text and save it to local storage
