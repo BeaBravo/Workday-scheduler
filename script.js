@@ -24,6 +24,7 @@ $(function () {
   var currentDayEl = $("#currentDay");
   var timeBlocks = $(".time-block");
   var hourBlock = $(".hour");
+  var saveButton = $(".saveBtn");
 
   //global variables
   var todaysDate;
@@ -71,10 +72,23 @@ $(function () {
   }
 
   function saveEvent() {
-    console.log("you click the save button");
+    var idParent = $(this).parent().attr("id");
+    var parentEl = $("#" + idParent);
+    var textEl = parentEl.children("textarea");
+    console.log("you click the save button", idParent);
+    var newEvent = textEl.val().trim();
+    if (newEvent === null) {
+      return;
+    } else {
+      console.log("this is the event: " + newEvent);
+    }
+    //will grab text and save it to local storage
   }
 
   //user interaction
+  saveButton.each(function () {
+    $(this).on("click", saveEvent);
+  });
 
   //initializations
   init();
