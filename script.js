@@ -29,25 +29,20 @@ $(function () {
   //global variables
   var todaysDate;
 
-  var todaysEvents = [];
+  var todaysEvents = {};
+
+  var eventId;
+  var eventText;
 
   //functions
   function init() {
     setInterval(getTodaysDate, 1000);
     getTodaysDate();
     colorCodeBlocks();
-
-    var storedEvents = JSON.parse(localStorage.getItem("events"));
-
-    if (storedEvents !== null) {
-      todaysEvents = storedEvents;
-    }
-
     renderEvents();
   }
 
   function getTodaysDate() {
-    // todaysDate = dayjs();
     todaysDate = dayjs();
     currentDayEl.text(todaysDate.format("dddd, MMMM D YYYY "));
   }
@@ -72,64 +67,39 @@ $(function () {
       var inFuture = todaysDate.isBefore(blockTimeDJS);
 
       if (blockTimeDJS.hour() === currentTime) {
-        $(timeBlocks[i]).attr("class", "row time-block present");
+        $(timeBlocks[i]).addClass("present");
       } else if (inFuture) {
-        $(timeBlocks[i]).attr("class", "row time-block future");
+        $(timeBlocks[i]).addClass("future");
       } else {
-        $(timeBlocks[i]).attr("class", "row time-block past");
+        $(timeBlocks[i]).addClass("past");
       }
       i++;
     });
   }
 
   function saveEvent() {
+    //this function is triggered by clicking on any of the buttons
+    // grab the ID of the parent (which will be the block) and display the message
     var idParent = $(this).parent().attr("id");
     var parentEl = $("#" + idParent);
     var textEl = parentEl.children("textarea");
-    var eventId = "#" + idParent;
-    var eventText = textEl.val().trim();
+    eventId = "#" + idParent;
+    eventText = textEl.val().trim();
 
-    var newEvent = {
-      id: eventId,
-      text: eventText,
-    };
+    localStorage.setItem(eventId, eventText);
 
-    todaysEvents.push(newEvent);
-
-    // if (todaysEvents.length === 0) {
-    //   newEvent = {
-    //     id: eventId,
-    //     text: eventText,
-    //   };
-    //   todaysEvents.push(newEvent);
-    // } else {
-    //   todaysEvents.forEach(function (meeting) {
-    //     if (eventId == meeting.id) {
-    //       meeting.text = eventText;
-    //       console.log("you're busy then!");
-    //       return;
-    //     } else {
-    //       newEvent = {
-    //         id: eventId,
-    //         text: eventText,
-    //       };
-    //     }
-    //   });
-    //   todaysEvents.push(newEvent);
-    // }
-
-    localStorage.setItem("events", JSON.stringify(todaysEvents));
+    // localStorage.setItem("events", JSON.stringify(todaysEvents));
     renderEvents();
     //will grab text and save it to local storage
   }
 
   function renderEvents() {
     // grab from local storage and place in their specific id
-    $(todaysEvents).each(function () {
-      $(this.id).children("textarea").val(this.text);
-    });
+    for (var i = 0; i < localStorage.length; i++) {
+      var id = localStorage.key(i);
+      $(id).children("textarea").val(localStorage.getItem(id));
+    }
   }
-
   //user interaction
   saveButton.each(function () {
     $(this).on("click", saveEvent);
