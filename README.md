@@ -19,7 +19,7 @@ deployed site: https://beabravo.github.io/Workday-scheduler/
 
 ## Credits
 
-N/A
+worked with Nick Catalano to get it to update local storage
 
 ## License
 
